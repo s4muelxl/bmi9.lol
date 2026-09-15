@@ -1,0 +1,92 @@
+[
+  {
+    "id": "obra-honda",
+    "title": "Concessionária Honda",
+    "description": "Revitalização e Pintura Epóxi de Oficina – Concessionária Honda.",
+    "long_description": "Projeto de pintura epóxi de alta espessura e sinalização de segurança executado na oficina da Concessionária Honda, garantindo durabilidade, facilidade de assepsia e acabamento premium.",
+    "seo_description": "Piso epóxi de alta resistência e sinalização de demarcação aplicados na oficina da Concessionária Honda pela BMI9.",
+    "image_src": "assets/honda_1.jpg",
+    "images": [
+      { "src": "assets/honda_1.jpg", "alt_pt": "Oficina Honda - Visão Geral do Piso Vermelho e Verde", "alt_en": "Honda Workshop - Red and Green Floor Overview" },
+      { "src": "assets/honda_2.jpg", "alt_pt": "Oficina Honda - Elevadores Hidráulicos e Pintura Epóxi Autonivelante", "alt_en": "Honda Workshop - Hydraulic Lifts and Self-leveling Epoxy Painting" },
+      { "src": "assets/honda_3.jpg", "alt_pt": "Oficina Honda - Elevadores Hidromar em Área Demarcada", "alt_en": "Honda Workshop - Hidromar Lifts in Demarcated Area" },
+      { "src": "assets/honda_4.jpg", "alt_pt": "Oficina Honda - Preparação e Pintura Epóxi em Todo o Galpão", "alt_en": "Honda Workshop - Preparation and Epoxy Coating in the Garage" },
+      { "src": "assets/honda_5.jpg", "alt_pt": "Oficina Honda - Detalhe do Acabamento das Faixas de Sinalização", "alt_en": "Honda Workshop - Detail of Traffic Safety Lines Finishing" },
+      { "src": "assets/honda_6.jpg", "alt_pt": "Oficina Honda - Visão Geral do Piso Brilhante com Pilares", "alt_en": "Honda Workshop - Glossy Floor Overview with Pillars" }
+    ],
+    "checklist": [
+      "Aplicação de revestimento epóxi brilhante de alta resistência mecânica",
+      "Demarcação completa de vagas, faixas de segurança e setas indicadoras",
+      "Acabamento estético impecável conforme a identidade visual da Honda"
+    ]
+  },
+  {
+    "id": "obra-galpao",
+    "title": "Creche e Parque de Diversões",
+    "description": "Creche e Parque de Diversões – piso monolítico e resinado colorido e seguro.",
+    "long_description": "Projeto desenvolvido para ambientes escolares e recreativos de alta circulação, priorizando a segurança infantil com absorção de impactos, cores vibrantes e facilidade de manutenção.",
+    "seo_description": "Obra realizada pela BMI9 em creche e parque de diversões com piso monolítico colorido e antiderrapante.",
+    "image_src": "assets/creche_1.png",
+    "images": [
+      { "src": "assets/creche_1.png", "alt_pt": "Piso Monolítico em Creche - Entrada e Cores", "alt_en": "Monolithic Floor in Daycare - Entrance and Colors" },
+      { "src": "assets/creche_2.png", "alt_pt": "Piso Monolítico em Creche - Visão Geral do Playground", "alt_en": "Monolithic Floor in Daycare - Playground Overview" },
+      { "src": "assets/creche_3.png", "alt_pt": "Piso Monolítico em Creche - Área de Brinquedos", "alt_en": "Monolithic Floor in Daycare - Toys Area" },
+      { "src": "assets/creche_4.png", "alt_pt": "Piso Monolítico em Creche - Detalhe das Cores", "alt_en": "Monolithic Floor in Daycare - Colors Detail" },
+      { "src": "assets/creche_5.png", "alt_pt": "Piso Monolítico em Parque de Diversões - Acabamento e Brilho", "alt_en": "Monolithic Floor in Amusement Park - Finish and Gloss" }
+    ],
+    "checklist": [
+      "Piso monolítico colorido e atóxico",
+      "Superfície contínua sem emendas para segurança",
+      "Alta facilidade de higienização e assepsia"
+    ]
+  },
+  {
+    "id": "obra-industria",
+    "title": "Piso Epóxi Industrial",
+    "description": "Piso Epóxi Industrial – alta resistência mecânica e demarcação de segurança.",
+    "long_description": "Sistema de piso epóxi de alta espessura aplicado em planta industrial, agregando durabilidade a cargas pesadas, resistência química e demarcação visual de segurança.",
+    "seo_description": "Projeto de revestimento epóxi industrial executado pela BMI9 com faixas de sinalização de segurança.",
+    "image_src": "assets/epoxi_1.jpg",
+    "images": [
+      { "src": "assets/epoxi_1.jpg", "alt_pt": "Piso Epóxi Industrial - Galpão com sinalização amarela e parede azul", "alt_en": "Industrial Epoxy Floor - Warehouse with yellow markings and blue wall" },
+      { "src": "assets/epoxi_2.jpg", "alt_pt": "Piso Epóxi Industrial - Textura e acabamento brilhante", "alt_en": "Industrial Epoxy Floor - Texture and glossy finish" },
+      { "src": "assets/epoxi_3.jpg", "alt_pt": "Piso Epóxi Industrial - Coluna amarela e caixa de hidrante", "alt_en": "Industrial Epoxy Floor - Yellow column and fire hydrant box" },
+      { "src": "assets/epoxi_4.jpg", "alt_pt": "Piso Epóxi Industrial - Profissional aplicando revestimento de resina", "alt_en": "Industrial Epoxy Floor - Professional applying resin coating" },
+      { "src": "assets/epoxi_5.jpg", "alt_pt": "Piso Epóxi Industrial - Corredor com acabamento brilhante e maquinário", "alt_en": "Industrial Epoxy Floor - Corridor with glossy finish and machinery" },
+      { "src": "assets/epoxi_6.jpg", "alt_pt": "Piso Epóxi Industrial - Rampa demarcada com guarda-corpo amarelo", "alt_en": "Industrial Epoxy Floor - Demarcated ramp with yellow guardrail" },
+      { "src": "assets/epoxi_7.jpg", "alt_pt": "Piso Epóxi Industrial - Corredor de tráfego com parede de blocos", "alt_en": "Industrial Epoxy Floor - Traffic corridor with block wall" },
+      { "src": "assets/epoxi_8.jpg", "alt_pt": "Piso Epóxi Industrial - Canaleta de drenagem e demarcação de segurança", "alt_en": "Industrial Epoxy Floor - Drainage channel and safety demarcation" },
+      { "src": "assets/epoxi_9.jpg", "alt_pt": "Piso Epóxi Industrial - Pintura cinza próximo à escada", "alt_en": "Industrial Epoxy Floor - Grey coating near the staircase" },
+      { "src": "assets/epoxi_1.png", "alt_pt": "Piso Epóxi - Pintura das Faixas de Segurança", "alt_en": "Epoxy Floor - Safety Markings Painting" },
+      { "src": "assets/epoxi_2.png", "alt_pt": "Piso Epóxi - Área de Maquinário Industrial", "alt_en": "Epoxy Floor - Industrial Machinery Area" },
+      { "src": "assets/epoxi_3.png", "alt_pt": "Piso Epóxi - Visão Ampla da Fábrica", "alt_en": "Epoxy Floor - Wide Factory View" },
+      { "src": "assets/epoxi_4.png", "alt_pt": "Piso Epóxi - Demarcação e Corredores", "alt_en": "Epoxy Floor - Demarcation and Corridors" },
+      { "src": "assets/epoxi_5.png", "alt_pt": "Piso Epóxi - Acabamento com Corredor Azul", "alt_en": "Epoxy Floor - Finish with Blue Corridor" }
+    ],
+    "checklist": [
+      "Revestimento epóxi brilhante e autonivelante",
+      "Sinalização e faixas de segurança demarcadas",
+      "Alta resistência mecânica e tráfego pesado"
+    ]
+  },
+  {
+    "id": "obra-comercial",
+    "title": "Piso e Parede Marmorizados",
+    "description": "Piso e Parede Marmorizados – porcelanato líquido de alto brilho e decoração de luxo.",
+    "long_description": "Execução artística de pisos em porcelanato líquido autonivelante metálico e revestimentos de parede marmorizados de alto padrão com inserção de folhas de ouro.",
+    "seo_description": "Piso e parede marmorizados de luxo aplicados pela BMI9 com porcelanato líquido e folhas de ouro.",
+    "image_src": "assets/marmorizado_1.png",
+    "images": [
+      { "src": "assets/marmorizado_1.png", "alt_pt": "Piso Marmorizado - Visão com Camiseta BMI9", "alt_en": "Marbled Floor - View with BMI9 T-Shirt" },
+      { "src": "assets/marmorizado_2.png", "alt_pt": "Piso Marmorizado - Sala Iluminada com LEDs", "alt_en": "Marbled Floor - Room Illuminated with LEDs" },
+      { "src": "assets/marmorizado_3.png", "alt_pt": "Piso Marmorizado - Detalhes dos Veios Metálicos", "alt_en": "Marbled Floor - Detail of Metallic Veins" },
+      { "src": "assets/marmorizado_4.png", "alt_pt": "Parede Marmorizada - Aplicação de Folha de Ouro", "alt_en": "Marbled Wall - Gold Leaf Application" },
+      { "src": "assets/marmorizado_5.png", "alt_pt": "Parede Marmorizada - Detalhe no Banheiro", "alt_en": "Marbled Wall - Bathroom Detail" }
+    ],
+    "checklist": [
+      "Efeito marmorizado com veios profundos metálicos",
+      "Acabamento em folhas de ouro em paredes de alto padrão",
+      "Design de luxo exclusivo e assepsia simplificada"
+    ]
+  }
+]

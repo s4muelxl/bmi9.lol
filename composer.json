@@ -1,0 +1,7 @@
+{
+  "name": "bmi9/site",
+  "description": "Formulario de orcamento BMI9 com envio via Resend",
+  "require": {
+    "resend/resend-php": "^0.18"
+  }
+}

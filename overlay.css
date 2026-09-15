@@ -1,0 +1,269 @@
+/* =========================================================
+   Overlay – Tela de Carregamento de Orçamento | BMI9
+   ========================================================= */
+
+/* Force hidden attribute to always win */
+#form-overlay[hidden] {
+  display: none !important;
+}
+
+/* ── Container principal ── */
+#form-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  background: rgba(5, 10, 18, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+#form-overlay.ov-visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#form-overlay.ov-hiding {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Card central ── */
+.ov-card {
+  background: #0d1420;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 24px;
+  padding: 40px 36px 36px;
+  width: 92%;
+  max-width: 420px;
+  box-shadow:
+    0 0 0 1px rgba(245, 197, 24, 0.08),
+    0 32px 80px rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#form-overlay.ov-visible .ov-card {
+  transform: translateY(0) scale(1);
+}
+
+/* ── Logo / Brand ── */
+.ov-brand {
+  margin-bottom: 28px;
+}
+
+.ov-logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #f5c518;
+  letter-spacing: 0.08em;
+  display: block;
+  line-height: 1;
+}
+
+.ov-logo-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── Spinner ── */
+.ov-spinner-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.ov-spinner {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(245, 197, 24, 0.12);
+  border-top-color: #f5c518;
+  animation: ov-spin 0.9s linear infinite;
+  position: absolute;
+}
+
+.ov-spinner-inner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.04);
+  border-bottom-color: rgba(245, 197, 24, 0.35);
+  animation: ov-spin 1.4s linear infinite reverse;
+  position: absolute;
+}
+
+.ov-check-icon {
+  display: none;
+  width: 28px;
+  height: 28px;
+  color: #64dc82;
+}
+
+.ov-check-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Texto de status ── */
+.ov-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  transition: color 0.3s ease;
+}
+
+.ov-subtitle {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.4);
+  margin: 0 0 28px;
+  min-height: 1.2em;
+  transition: color 0.3s ease;
+}
+
+/* ── Barra de progresso ── */
+.ov-progress-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.ov-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #c9922a, #f5c518 60%, #ffd95a);
+  border-radius: 99px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(245, 197, 24, 0.45);
+}
+
+/* ── Etapas ── */
+.ov-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.ov-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  opacity: 0.35;
+  transition: opacity 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.ov-step.step-active {
+  opacity: 1;
+  background: rgba(245, 197, 24, 0.06);
+  border-color: rgba(245, 197, 24, 0.2);
+}
+
+.ov-step.step-done {
+  opacity: 0.9;
+  background: rgba(100, 220, 130, 0.05);
+  border-color: rgba(100, 220, 130, 0.15);
+}
+
+.ov-step-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.ov-step.step-active .ov-step-dot {
+  border-color: #f5c518;
+  background: rgba(245, 197, 24, 0.15);
+}
+
+.ov-step.step-done .ov-step-dot {
+  border-color: #64dc82;
+  background: rgba(100, 220, 130, 0.15);
+}
+
+.ov-step-dot svg {
+  width: 10px;
+  height: 10px;
+  stroke: rgba(255,255,255,0.2);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+}
+
+.ov-step.step-active .ov-step-dot svg {
+  stroke: #f5c518;
+}
+
+.ov-step.step-done .ov-step-dot svg {
+  stroke: #64dc82;
+}
+
+.ov-step-label {
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+}
+
+.ov-step.step-active .ov-step-label {
+  color: #fff;
+}
+
+.ov-step.step-done .ov-step-label {
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── Estado "done" ── */
+#form-overlay.ov-done .ov-spinner {
+  display: none;
+}
+#form-overlay.ov-done .ov-spinner-inner {
+  display: none;
+}
+#form-overlay.ov-done .ov-check-icon {
+  display: block;
+}
+#form-overlay.ov-done .ov-title {
+  color: #64dc82;
+}
+
+/* ── Keyframes ── */
+@keyframes ov-spin {
+  to { transform: rotate(360deg); }
+}
