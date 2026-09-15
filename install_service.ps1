@@ -29,21 +29,32 @@ function Write-Step  { param($msg) Write-Host "[*] $msg" -ForegroundColor Cyan }
 function Write-OK    { param($msg) Write-Host "[✓] $msg" -ForegroundColor Green }
 function Write-Err   { param($msg) Write-Host "[✗] $msg" -ForegroundColor Red }
 
-# ── 1. Verificar venv ─────────────────────────────────────────
-Write-Step "Verificando ambiente virtual..."
-if (-not (Test-Path $VenvPython)) {
-    Write-Err "Python do venv não encontrado em: $VenvPython"
-    Write-Err "Execute o run.bat primeiro para criar o ambiente virtual."
-    exit 1
-}
-Write-OK "Python do venv encontrado: $VenvPython"
+# ── 1. Verificar runtime (Python venv ou Node.js) ─────────────
+Write-Step "Verificando ambiente de execução..."
+$NodeCmd = Get-Command node -ErrorAction SilentlyContinue
+$NodeExe = if ($NodeCmd) { $NodeCmd.Source } else { $null }
+$ExecPath = $null
 
-# ── 2. Garantir dependências instaladas ───────────────────────
-Write-Step "Verificando dependências do pip..."
-$reqFile = Join-Path $ProjectDir "requirements.txt"
-if (Test-Path $reqFile) {
-    & $VenvPython -m pip install -r $reqFile -q 2>$null
-    Write-OK "Dependências verificadas."
+if (Test-Path $VenvPython) {
+    $ExecPath = $VenvPython
+    $AppScript = "api\index.py"
+    Write-OK "Python do venv encontrado: $VenvPython"
+    
+    # ── 2. Garantir dependências do Python instaladas ───────────
+    Write-Step "Verificando dependências do pip..."
+    $reqFile = Join-Path $ProjectDir "requirements.txt"
+    if (Test-Path $reqFile) {
+        & $VenvPython -m pip install -r $reqFile -q 2>$null
+        Write-OK "Dependências verificadas."
+    }
+} elseif ($NodeExe) {
+    $ExecPath = $NodeExe
+    $AppScript = "server.js"
+    Write-OK "Node.js encontrado: $NodeExe (executará server.js)"
+} else {
+    Write-Err "Nem Python do venv nem Node.js foram encontrados."
+    Write-Err "Instale o Node.js ou execute run.bat para configurar o ambiente."
+    exit 1
 }
 
 # ── 3. Baixar NSSM se necessário ──────────────────────────────
@@ -122,7 +133,7 @@ if (-not (Test-Path $LogDir)) {
 # ── 6. Instalar o serviço ────────────────────────────────────
 Write-Step "Instalando serviço '$ServiceName'..."
 
-& $NssmExe install $ServiceName $VenvPython
+& $NssmExe install $ServiceName $ExecPath
 if ($LASTEXITCODE -ne 0) {
     Write-Err "Falha ao instalar o serviço."
     exit 1

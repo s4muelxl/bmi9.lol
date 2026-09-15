@@ -13,6 +13,15 @@ if (-not $root) {
 }
 Set-Location $root
 
+if (Get-Command node -ErrorAction SilentlyContinue) {
+  Write-Host "============================================" -ForegroundColor Cyan
+  Write-Host "  BMI9 - Servidor Node.js iniciando..." -ForegroundColor Cyan
+  Write-Host "  Acesse: http://localhost:5000" -ForegroundColor Cyan
+  Write-Host "============================================" -ForegroundColor Cyan
+  node server.js
+  exit 0
+}
+
 $pyCmd = $null
 if (Get-Command py -ErrorAction SilentlyContinue) {
   $pyCmd = "py"
@@ -21,8 +30,8 @@ if (Get-Command py -ErrorAction SilentlyContinue) {
 }
 
 if (-not $pyCmd) {
-  Write-Host "[ERRO] Python nao encontrado. Instale o Python 3.10+ e tente novamente."
-  Write-Host "Download: https://www.python.org/downloads/"
+  Write-Host "[ERRO] Nem Node.js nem Python foram encontrados para iniciar o servidor local."
+  Write-Host "Instale o Node.js (https://nodejs.org) ou Python (https://www.python.org/downloads/)."
   exit 1
 }
 

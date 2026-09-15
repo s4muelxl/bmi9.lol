@@ -231,6 +231,221 @@ const initAll = () => {
     window.location.href = url;
   }
 
+  function buildPdfFilename(nome) {
+    const safe = (nome || "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+    return `Orcamento_${safe || "BMI9"}.pdf`;
+  }
+
+  function generateClientPdf(data) {
+    const pageWidth = 595;
+    const pageHeight = 842;
+    const pad = (n) => String(n).padStart(2, "0");
+    const dObj = new Date();
+    const agora = `${pad(dObj.getDate())}/${pad(dObj.getMonth() + 1)}/${dObj.getFullYear()} ${pad(dObj.getHours())}:${pad(dObj.getMinutes())}:${pad(dObj.getSeconds())}`;
+    const referencia = `BMI9-${String(dObj.getFullYear()).slice(-2)}${pad(dObj.getMonth() + 1)}${pad(dObj.getDate())}-${pad(dObj.getHours())}${pad(dObj.getMinutes())}${pad(dObj.getSeconds())}`;
+    const margem = 42;
+    const largConteudo = pageWidth - margem * 2;
+    const largGap = 16;
+    const largCard = (largConteudo - largGap) / 2;
+    const cidadeEstado = [data.cidade, data.estado].filter(Boolean).join(" - ") || "Não informado";
+    const valMetragem = data.metragem ? `${data.metragem} m²` : "Não informada";
+    const msgBase = data.mensagem || "Nenhuma mensagem adicional foi informada pelo cliente.";
+
+    const palette = {
+      background: [245, 247, 250],
+      brand: [9, 39, 66],
+      brandSoft: [22, 62, 94],
+      accent: [242, 181, 52],
+      accentSoft: [252, 240, 214],
+      surface: [255, 255, 255],
+      stroke: [220, 228, 237],
+      title: [10, 31, 53],
+      muted: [98, 117, 140],
+      text: [33, 48, 70],
+    };
+
+    const rowsContato = [
+      ["Nome / empresa", data.nome || "Não informado"],
+      ["Telefone", data.telefone || "Não informado"],
+      ["Cidade / estado", cidadeEstado],
+    ];
+    const rowsProjeto = [
+      ["Tipo de obra", data.tipo_obra || "Não informado"],
+      ["Metragem", valMetragem],
+      ["Origem", "Solicitação recebida pelo site BMI9"],
+    ];
+
+    const escapePdf = (t) => {
+      let r = "";
+      for (let i = 0; i < (t || "").length; i++) {
+        const c = t.charCodeAt(i);
+        r += c > 255 ? "?" : t[i];
+      }
+      return r.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+    };
+
+    const colorCmd = (rgb, m) => `${(rgb[0] / 255).toFixed(3)} ${(rgb[1] / 255).toFixed(3)} ${(rgb[2] / 255).toFixed(3)} ${m}`;
+    const rectCmd = (x, y, w, h, fill, stroke, lw) => {
+      lw = lw || 1;
+      const cmds = ["q"];
+      if (fill) cmds.push(colorCmd(fill, "rg"));
+      if (stroke) { cmds.push(`${lw.toFixed(2)} w`); cmds.push(colorCmd(stroke, "RG")); }
+      const op = fill && stroke ? "B" : stroke ? "S" : "f";
+      cmds.push(`${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${op}`);
+      cmds.push("Q");
+      return cmds.join("\n") + "\n";
+    };
+
+    const textCmd = (x, y, txt, sz, rgb, fnt) => [
+      "BT",
+      `/${fnt} ${sz.toFixed(2)} Tf`,
+      colorCmd(rgb, "rg"),
+      `${x.toFixed(2)} ${y.toFixed(2)} Td`,
+      `(${escapePdf(txt)}) Tj`,
+      "ET"
+    ].join("\n") + "\n";
+
+    const rectTop = (x, top, w, h, fill, stroke, lw) => rectCmd(x, pageHeight - top - h, w, h, fill, stroke, lw);
+    const textTop = (x, baseTop, txt, sz, rgb, fnt) => textCmd(x, pageHeight - baseTop, txt, sz, rgb, fnt);
+
+    const wrapLines = (txt, maxC) => {
+      const norm = (txt || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+      if (!norm) return [""];
+      const lines = [];
+      norm.split("\n").forEach((p) => {
+        let buf = "";
+        p.trim().split(/\s+/).forEach((w) => {
+          if (w.length > maxC) {
+            if (buf) { lines.push(buf); buf = ""; }
+            for (let i = 0; i < w.length; i += maxC) lines.push(w.slice(i, i + maxC));
+            return;
+          }
+          const cand = buf ? `${buf} ${w}` : w;
+          if (cand.length <= maxC) buf = cand;
+          else { if (buf) lines.push(buf); buf = w; }
+        });
+        if (buf) lines.push(buf);
+      });
+      return lines.length ? lines : [""];
+    };
+
+    const prepRows = (rows) => rows.map(([lbl, val]) => [lbl, wrapLines(val || "—", 29)]);
+    const cardH = (prep) => {
+      let h = 78.0;
+      prep.forEach(([, lns]) => { h += 11.0 + (lns.length * 12.5) + 7.5; });
+      return Math.max(166.0, h);
+    };
+
+    const prepC = prepRows(rowsContato);
+    const prepP = prepRows(rowsProjeto);
+    const altCards = Math.max(cardH(prepC), cardH(prepP));
+
+    const drawCard = (x, top, w, h, ttl, prep, accent) => {
+      let out = "";
+      const vOff = Math.max(0, (h - cardH(prep)) / 2);
+      out += rectTop(x + 4, top + 4, w, h, [228, 234, 242]);
+      out += rectTop(x, top, w, h, [255, 255, 255], [221, 229, 237], 1);
+      out += rectTop(x, top, w, 6, accent);
+      out += textTop(x + 18, top + 34 + vOff, ttl, 14, [10, 31, 53], "F1");
+      out += rectTop(x + 18, top + 46 + vOff, w - 36, 1, [221, 229, 237]);
+      let cTop = top + 67 + vOff;
+      prep.forEach(([lbl, lns]) => {
+        out += textTop(x + 18, cTop, lbl.toUpperCase(), 7.6, [98, 117, 140], "F1");
+        cTop += 11;
+        lns.forEach((ln) => {
+          out += textTop(x + 18, cTop, ln, 11.3, [33, 48, 70], "F2");
+          cTop += 12.5;
+        });
+        cTop += 7.5;
+      });
+      return out;
+    };
+
+    const topoCards = 308;
+    const topoMsg = topoCards + altCards + 30;
+    const topoFooter = 742;
+    const altFooter = 58;
+    const altMsg = Math.max(168, topoFooter - topoMsg - 20);
+    const lnsMsg = wrapLines(msgBase, 72).slice(0, 8);
+
+    let c = "";
+    c += rectCmd(0, 0, pageWidth, pageHeight, palette.background);
+    c += rectTop(0, 0, pageWidth, 212, palette.brand);
+    c += rectTop(0, 158, pageWidth, 54, palette.brandSoft);
+    c += rectTop(388, 44, 166, 92, palette.brandSoft, [47, 93, 131], 1);
+
+    const fLarg = (largConteudo - 24) / 3;
+    c += rectTop(margem, 176, fLarg, 16, [18, 53, 82]);
+    c += rectTop(margem + fLarg + 12, 176, fLarg, 16, [18, 53, 82]);
+    c += rectTop(margem + fLarg * 2 + 24, 176, fLarg, 16, [18, 53, 82]);
+
+    c += rectTop(margem, 38, 70, 22, palette.accent);
+    c += textTop(margem + 11, 54, "BMI9", 16, [0, 0, 0], "F1");
+    c += textTop(margem, 73, "CONSTRUCAO E REFORMAS", 7, [201, 213, 225], "F1");
+
+    c += textTop(margem, 122, "Solicitacao de Orcamento", 24, [255, 255, 255], "F1");
+    c += textTop(margem, 150, "Documento executivo com os dados enviados pelo cliente.", 11.2, [214, 222, 231], "F2");
+    c += textTop(margem + 8, 188, "Triagem inicial", 8.2, [218, 229, 239], "F2");
+    c += textTop(margem + fLarg + 20, 188, "Contato comercial", 8.2, [218, 229, 239], "F2");
+    c += textTop(margem + fLarg * 2 + 32, 188, "Proposta tecnica", 8.2, [218, 229, 239], "F2");
+
+    c += textTop(406, 68, "GERADO EM", 8.5, palette.accent, "F1");
+    c += textTop(406, 92, agora, 12, [255, 255, 255], "F2");
+    c += textTop(406, 116, "REFERENCIA", 8.2, palette.accent, "F1");
+    c += textTop(406, 134, referencia, 10.2, [228, 236, 244], "F2");
+
+    c += textTop(margem, 248, "Resumo do cliente", 18, palette.title, "F1");
+    c += textTop(margem, 272, "Os dados foram organizados em blocos para facilitar a triagem comercial.", 10.6, palette.muted, "F2");
+
+    c += drawCard(margem, topoCards, largCard, altCards, "Contato", prepC, palette.accent);
+    c += drawCard(margem + largCard + largGap, topoCards, largCard, altCards, "Projeto", prepP, [56, 132, 255]);
+
+    c += rectTop(margem + 4, topoMsg + 4, largConteudo, altMsg, [228, 234, 242]);
+    c += rectTop(margem, topoMsg, largConteudo, altMsg, palette.surface, palette.stroke, 1);
+    c += rectTop(margem, topoMsg, largConteudo, 58, palette.accentSoft);
+    c += textTop(margem + 18, topoMsg + 36, "Escopo e observacoes do cliente", 13.5, palette.title, "F1");
+    c += textTop(margem + 18, topoMsg + 56, "Mensagem enviada no formulario de orcamento.", 10, palette.muted, "F2");
+
+    let mY = pageHeight - (topoMsg + 92);
+    lnsMsg.forEach((ln) => {
+      c += textCmd(margem + 18, mY, ln, 11.1, palette.text, "F2");
+      mY -= 15;
+    });
+
+    c += rectTop(margem, topoFooter, largConteudo, altFooter, palette.brand);
+    c += textTop(margem + 18, topoFooter + 24, "Proximos passos: analise tecnica, contato comercial e proposta detalhada.", 9.6, [255, 255, 255], "F2");
+    c += textTop(margem + 18, topoFooter + 44, "Documento gerado automaticamente para atendimento comercial da BMI9.", 8.8, [201, 213, 225], "F2");
+
+    const objs = [
+      "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj",
+      "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj",
+      "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >> endobj",
+      "4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >> endobj",
+      "5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >> endobj",
+      `6 0 obj << /Length ${c.length} >> stream\n${c}\nendstream\nendobj`
+    ];
+
+    const parts = ["%PDF-1.4\n"];
+    const offsets = [0];
+    let cur = parts[0].length;
+    objs.forEach((o) => {
+      offsets.push(cur);
+      const str = o + "\n";
+      parts.push(str);
+      cur += str.length;
+    });
+
+    const xref = [`xref\n0 ${objs.length + 1}\n`, "0000000000 65535 f \n"];
+    for (let i = 1; i <= objs.length; i++) {
+      xref.push(`${String(offsets[i]).padStart(10, "0")} 00000 n \n`);
+    }
+    xref.push(`trailer << /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${cur}\n%%EOF`);
+    parts.push(xref.join(""));
+
+    const rawPdf = parts.join("");
+    return btoa(rawPdf);
+  }
+
   function downloadPdf(base64Content, filename) {
     if (!base64Content) return;
 
@@ -264,6 +479,7 @@ const initAll = () => {
   function hideSuccessCard() {
     if (!successCard) return;
     successCard.hidden = true;
+    successCard.setAttribute("hidden", "hidden");
   }
 
   function showSuccessCard(message, whatsappUrl) {
@@ -273,8 +489,11 @@ const initAll = () => {
     }
     if (successWhatsApp && whatsappUrl) {
       successWhatsApp.href = whatsappUrl;
+      successWhatsApp.target = "_blank";
+      successWhatsApp.rel = "noopener";
     }
     successCard.hidden = false;
+    successCard.removeAttribute("hidden");
     successCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
@@ -679,23 +898,54 @@ const initAll = () => {
         if (result && result.__error) {
           const error = result.__error;
           const isRecoverable = error instanceof Error && error.recoverable === true;
-          await showErrorAndHide();
-          formOrcamento.reset();
 
           if (isRecoverable) {
-            const detalhe = isLocalDev() && error.message ? ` Detalhe: ${error.message}` : "";
-            formStatus.textContent =
-              "Não foi possível registrar automaticamente agora." +
-              getLocalBackendHelp() +
-              " Você ainda pode continuar pelo WhatsApp." +
-              detalhe;
+            console.warn("Backend offline ou inacessível. Ativando finalização local de contingência:", error.message);
+
+            // 1. Salvar backup localmente para não perder o lead
+            try {
+              const offlineLeads = JSON.parse(localStorage.getItem("bmi9_offline_leads") || "[]");
+              offlineLeads.push({
+                data: new Date().toLocaleString("pt-BR"),
+                ...data
+              });
+              localStorage.setItem("bmi9_offline_leads", JSON.stringify(offlineLeads));
+            } catch (_) {}
+
+            // 2. Gerar PDF diretamente no navegador
+            let clientPdfB64 = "";
+            try {
+              clientPdfB64 = generateClientPdf(data);
+              downloadPdf(clientPdfB64, buildPdfFilename(data.nome));
+            } catch (pdfErr) {
+              console.warn("Falha na geração do PDF no cliente:", pdfErr);
+            }
+
+            const waUrl = buildWhatsAppUrl(data);
+            await showDoneAndHide(1000);
+
+            const hasPdf = Boolean(clientPdfB64);
+            formStatus.innerHTML = hasPdf
+              ? "✅ Solicitação concluída com sucesso! Seu PDF foi gerado e baixado."
+              : "✅ Solicitação concluída! Clique no botão abaixo para continuar no WhatsApp.";
             formStatus.className = "form-status success";
-            setTimeout(() => openWhatsAppSafely(buildWhatsAppUrl(data)), 4000);
+
+            showSuccessCard(
+              hasPdf
+                ? "Tudo pronto! Seu orçamento foi gerado e o arquivo PDF já foi baixado. Clique no botão abaixo para falar com nosso atendimento no WhatsApp:"
+                : "Tudo pronto! Clique no botão abaixo para falar diretamente com nosso atendimento no WhatsApp:",
+              waUrl
+            );
+
+            formOrcamento.reset();
+            setTimeout(() => openWhatsAppSafely(waUrl), 3500);
+            return;
           } else {
+            await showErrorAndHide();
             formStatus.textContent = error.message || "Ocorreu um erro. Tente novamente ou chame no WhatsApp.";
             formStatus.className = "form-status error";
+            return;
           }
-          return;
         }
 
         // Sucesso

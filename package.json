@@ -1,0 +1,17 @@
+{
+  "name": "bmi9.lol",
+  "version": "1.0.0",
+  "description": "Plataforma Web Institucional & Sistema de Orçamentos BMI9",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:projetos": "node build_projetos.js"
+  },
+  "keywords": [
+    "piso-industrial",
+    "pisos-monoliticos",
+    "bmi9"
+  ],
+  "author": "BMI9",
+  "license": "UNLICENSED"
+}

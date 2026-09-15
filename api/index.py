@@ -140,7 +140,7 @@ def get_request_data():
 def get_cors_origin():
     origin = request.headers.get("Origin")
     if not origin:
-        return None
+        return "*" if ALLOW_ALL_CORS else None
     if ALLOW_ALL_CORS:
         return origin
     if origin == "null":
@@ -149,7 +149,17 @@ def get_cors_origin():
         return origin
     if origin in CORS_ORIGINS:
         return origin
-    return None
+    return "*" if ALLOW_ALL_CORS else None
+
+
+@app.after_request
+def add_cors_headers(response):
+    origin = get_cors_origin()
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Requested-With, Accept, Authorization"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
 
 
 def processar_orcamento():

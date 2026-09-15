@@ -2,6 +2,18 @@
 setlocal
 cd /d %~dp0
 
+where node >nul 2>nul
+if %errorlevel% equ 0 (
+  echo.
+  echo ============================================
+  echo   BMI9 - Servidor Node.js iniciando...
+  echo   Acesse: http://localhost:5000
+  echo ============================================
+  echo.
+  node server.js
+  goto :end
+)
+
 if not exist .venv (
   echo [INFO] Criando ambiente virtual...
   py -m venv .venv 2>nul || python -m venv .venv
@@ -39,4 +51,5 @@ echo.
 
 echo.
 echo [INFO] Servidor encerrado.
+:end
 pause
